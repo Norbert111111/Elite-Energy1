@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELITE1 - ELITE ENERGY SMART GRID RDC</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="style1.css" />
+
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+    <script>
+//document.addEventListener("contextmenu", function(e) {
+    //e.preventDefault();
+//});
+
+document.addEventListener("keydown", function(e) {
+
+    if (
+        (e.ctrlKey && e.key.toLowerCase() === "c") ||
+        (e.ctrlKey && e.key.toLowerCase() === "u") ||
+        (e.ctrlKey && e.key.toLowerCase() === "a") ||
+        (e.ctrlKey && e.key.toLowerCase() === "s")
+    ) {
+        e.preventDefault();
+    }
+
+});
+</script>
+
+  <div class="main-wrapper">
+    <h1 class="hide-on-mobile"> RESEAU DE DISTRIBUTION ELECTRIQUE INTELLIGENT EN RDC , ELITE-ENERGY SMART GRID RDC</h1>
+    <h2 class="hide-on-mobile">APPAREIL CONNECTÉ : ELITE1</h2>
+
+    <div class="image-container">
+      <img class="hide-on-mobile image-placeholder" src="images/logo17.jpg" alt="Logo ELITE ENERGY">
+      <h3 class="title-desktop">INTERFACE DE CONTRÔLE ET D'AFFICHAGE DES 6 DÉPARTS</h3>
+      <img class="hide-on-mobile image-placeholder" src="images/logo17.jpg" alt="Logo ELITE ENERGY">
+    </div>
+
+    <div class="title-mobile-wrapper">
+      <img src="images/logo17.jpg" alt="Logo ELITE ENERGY">
+      <div class="text-block">
+        <span>ELITE-ENERGY</span>
+        <span>SMART GRID RDC</span>
+      </div>
+    </div>
+
+    <p class="mobile-only">INTERFACE ELITE1</p>
+
+    <h3>DONNÉES ÉLECTRIQUES DES 6 DÉPARTS</h3>
+
+    <div class="table-wrapper">
+      <table>
+        <tr class="title-row">
+          <th colspan="7">DonnéesELITE1</th>
+        </tr>
+        <tr>
+          <th>Départ</th>
+          <th>Courant</th>
+          <th>Tension</th>
+          <th>Puissance</th>
+          <th>Énergie</th>
+          <th>État</th>
+          <th>Prédiction IA</th>
+        </tr>
+
+        <tr>
+          <td>Départ 1</td>
+          <td id="courantD1">0 A</td>
+          <td id="tensionD1">0 V</td>
+          <td id="puissanceD1">0 W</td>
+          <td id="energieD1">0 kWh</td>
+          <td id="etatD1">Départ désactivé</td>
+          <td id="predictionD1">IA : en attente</td>
+        </tr>
+        <tr>
+          <td>Départ 2</td>
+          <td id="courantD2">0 A</td>
+          <td id="tensionD2">0 V</td>
+          <td id="puissanceD2">0 W</td>
+          <td id="energieD2">0 kWh</td>
+          <td id="etatD2">Départ désactivé</td>
+          <td id="predictionD2">IA : en attente</td>
+        </tr>
+        <tr>
+          <td>Départ 3</td>
+          <td id="courantD3">0 A</td>
+          <td id="tensionD3">0 V</td>
+          <td id="puissanceD3">0 W</td>
+          <td id="energieD3">0 kWh</td>
+          <td id="etatD3">Départ désactivé</td>
+          <td id="predictionD3">IA : en attente</td>
+        </tr>
+        <tr>
+          <td>Départ 4</td>
+          <td id="courantD4">0 A</td>
+          <td id="tensionD4">0 V</td>
+          <td id="puissanceD4">0 W</td>
+          <td id="energieD4">0 kWh</td>
+          <td id="etatD4">Départ désactivé</td>
+          <td id="predictionD4">IA : en attente</td>
+        </tr>
+        <tr>
+          <td>Départ 5</td>
+          <td id="courantD5">0 A</td>
+          <td id="tensionD5">0 V</td>
+          <td id="puissanceD5">0 W</td>
+          <td id="energieD5">0 kWh</td>
+          <td id="etatD5">Départ désactivé</td>
+          <td id="predictionD5">IA : en attente</td>
+        </tr>
+        <tr>
+          <td>Départ 6</td>
+          <td id="courantD6">0 A</td>
+          <td id="tensionD6">0 V</td>
+          <td id="puissanceD6">0 W</td>
+          <td id="energieD6">0 kWh</td>
+          <td id="etatD6">Départ désactivé</td>
+          <td id="predictionD6">IA : en attente</td>
+        </tr>
+      </table>
+    </div>
+
+    <h3>CONTRÔLE ET COMMANDE DES 6 DÉPARTS</h3>
+    <p class="status-global" id="etatGlobal">Tous les départs sont désactivés</p>
+
+    <section class="command-section">
+      <div class="station depart1">
+        <h4>Départ 1</h4>
+        <button id="btnActiverD1" class="activate" onclick="activerDepart(1)">Activer</button>
+        <button class="desactivate" onclick="desactiverDepart(1)">Désactiver</button>
+        <p><span id="etatCommandeD1">Départ désactivé</span></p>
+      </div>
+
+      <div class="station depart2">
+        <h4>Départ 2</h4>
+        <button id="btnActiverD2" class="activate" onclick="activerDepart(2)">Activer</button>
+        <button class="desactivate" onclick="desactiverDepart(2)">Désactiver</button>
+        <p><span id="etatCommandeD2">Départ désactivé</span></p>
+      </div>
+
+      <div class="station depart3">
+        <h4>Départ 3</h4>
+        <button id="btnActiverD3" class="activate" onclick="activerDepart(3)">Activer</button>
+        <button class="desactivate" onclick="desactiverDepart(3)">Désactiver</button>
+        <p><span id="etatCommandeD3">Départ désactivé</span></p>
+      </div>
+
+      <div class="station depart4">
+        <h4>Départ 4</h4>
+        <button id="btnActiverD4" class="activate" onclick="activerDepart(4)">Activer</button>
+        <button class="desactivate" onclick="desactiverDepart(4)">Désactiver</button>
+        <p><span id="etatCommandeD4">Départ désactivé</span></p>
+      </div>
+
+      <div class="station depart5">
+        <h4>Départ 5</h4>
+        <button id="btnActiverD5" class="activate" onclick="activerDepart(5)">Activer</button>
+        <button class="desactivate" onclick="desactiverDepart(5)">Désactiver</button>
+        <p><span id="etatCommandeD5">Départ désactivé</span></p>
+      </div>
+
+      <div class="station depart6">
+        <h4>Départ 6</h4>
+        <button id="btnActiverD6" class="activate" onclick="activerDepart(6)">Activer</button>
+        <button class="desactivate" onclick="desactiverDepart(6)">Désactiver</button>
+        <p><span id="etatCommandeD6">Départ désactivé</span></p>
+      </div>
+    </section>
+
+    <section class="global-command">
+      <button id="btnActiverTout" class="activate" onclick="activerTousLesDeparts()">Activer tous les départs</button>
+      <button class="desactivate" onclick="desactiverTousLesDeparts()">Désactiver tous les départs</button>
+    </section>
+  </div>
+
+  <div class="bottom-nav">
+
+    <div class="nav-item active"
+         onclick="window.location.href='index.html'">
+        <i class="fas fa-home"></i>
+    </div>
+
+    <div class="nav-item"
+         onclick="window.location.href='index1.html'">
+        <i class="fas fa-sliders-h"></i>
+    </div>
+
+    <div class="nav-item"
+         onclick="window.location.href='index2.html'">
+        <i class="fas fa-chart-line"></i>
+    </div>
+
+</div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyArEB0lH1tz3OOvrgKzL0cypYfMpQVgPm0",
+      authDomain: "maison-iot-b0dd6.firebaseapp.com",
+      databaseURL: "https://maison-iot-b0dd6-default-rtdb.firebaseio.com",
+      projectId: "maison-iot-b0dd6",
+      storageBucket: "maison-iot-b0dd6.appspot.com",
+      messagingSenderId: "838021465845",
+      appId: "1:838021465845:web:b277f02fd883b0c23627bc",
+      measurementId: "G-P697GH67M1"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    const APPAREIL = "ELITE1";
+    const donneesRef = database.ref(`${APPAREIL}/DonneesELITE1`);
+    const commandeRef = database.ref(`${APPAREIL}/CommandeELITE1`);
+
+    let modeSilencieux = false;
+    let compteurIA = 0;
+    let coupureTensionFaibleDejaAnnoncee = false;
+    const mesuresDepart = {};
+
+    function valeurNumerique(valeur, defaut = 0) {
+      const nombre = Number(valeur);
+      return Number.isFinite(nombre) ? nombre : defaut;
+    }
+
+
+    function predireEtatDepart(numero) {
+      const m = mesuresDepart[numero] || { courant: 0, tension: 0, puissance: 0, energie: 0 };
+      const etatTexte = document.getElementById(`etatD${numero}`).textContent;
+      const predictionElem = document.getElementById(`predictionD${numero}`);
+      if (!predictionElem) return;
+
+      const donneesRecues = m.courant > 0 || m.tension > 0 || m.puissance > 0 || m.energie > 0;
+      let prediction = "IA : en attente";
+      let couleur = "#f5a506";
+
+      if (!donneesRecues) {
+        prediction = "IA : attente données";
+        couleur = "#f5a506";
+      } else if (etatTexte.includes("désactivé")) {
+        prediction = "IA : départ coupé";
+        couleur = "#5C0011";
+      } else if (m.tension > 0 && m.tension < 140) {
+        prediction = "IA : tension faible, risque";
+        couleur = "#dc3545";
+      } else if (m.tension > 0 && (m.tension < 200 || m.tension > 250)) {
+        prediction = "IA : tension anormale";
+        couleur = "#dc3545";
+      } else if (m.courant > 30) {
+        prediction = "IA : surcharge courant";
+        couleur = "#dc3545";
+      } else if (m.puissance > 10000) {
+        prediction = "IA : puissance élevée";
+        couleur = "#dc3545";
+      } else {
+        prediction = "IA : fonctionnement normal";
+        couleur = "#1408f4";
+      }
+
+      predictionElem.textContent = prediction;
+      predictionElem.style.color = couleur;
+    }
+
+    function parler(message) {
+      if (modeSilencieux) return;
+      if (!window.speechSynthesis) return;
+
+      const voix = new SpeechSynthesisUtterance(message);
+      voix.lang = "fr-FR";
+      voix.rate = 0.95;
+      speechSynthesis.speak(voix);
+    }
+
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        parler("Bienvenue sur l'interface de contrôle et de commande du réseau électrique intelligent ,. EILITE ENERGY R D C, appareil EILITE 1.");
+      }, 700);
+    });
+
+    // Initialise seulement les chemins qui n'existent pas encore.
+    // Important : cela n'écrase pas les vraies valeurs envoyées par l'ESP32.
+    function initialiserFirebaseSansEcraserESP32() {
+      for (let i = 1; i <= 6; i++) {
+        donneesRef.child(`Depart${i}`).once("value").then(snapshot => {
+          if (!snapshot.exists()) {
+            donneesRef.child(`Depart${i}`).set({
+              [`CourantD${i}`]: 0,
+              [`TensionD${i}`]: 0,
+              [`PuissanceD${i}`]: 0,
+              [`EnergieD${i}`]: 0,
+              Historique: {
+                DerniereMiseAJour: "En attente ESP32"
+              }
+            });
+          }
+        });
+
+        commandeRef.child(`Commande${i}`).once("value").then(snapshot => {
+          if (!snapshot.exists()) {
+            commandeRef.child(`Commande${i}`).set(0);
+          }
+        });
+      }
+    }
+
+    function activerDepart(numero) {
+      commandeRef.child(`Commande${numero}`).set(1);
+      if (!modeSilencieux) parler(`Le départ ${numero} est activé`);
+
+      // Aucune simulation ici : courant, tension, puissance et énergie restent à zéro
+      // jusqu'à l'arrivée des données réelles envoyées par l'ESP32.
+    }
+
+    function desactiverDepart(numero) {
+  commandeRef.child(`Commande${numero}`).set(0);
+
+  // Remet uniquement le courant à zéro
+  donneesRef.child(`Depart${numero}`).update({
+    [`CourantD${numero}`]: 0
+  });
+
+  if (!modeSilencieux) {
+    parler(`Le départ ${numero} est désactivé`);
+  }
+}
+
+    function activerTousLesDeparts() {
+      modeSilencieux = true;
+      const updates = {};
+      for (let i = 1; i <= 6; i++) updates[`Commande${i}`] = 1;
+      commandeRef.update(updates).then(() => {
+        modeSilencieux = false;
+        parler("Tous les départs sont activés");
+      });
+    }
+
+    function desactiverTousLesDeparts(annoncer = true) {
+  modeSilencieux = true;
+  const updates = {};
+  for (let i = 1; i <= 6; i++) {
+    updates[`Commande${i}`] = 0;
+    // Remet uniquement le courant à zéro
+    donneesRef.child(`Depart${i}`).update({
+      [`CourantD${i}`]: 0
+    });
+  }
+  commandeRef.update(updates).then(() => {
+    modeSilencieux = false;
+    if (annoncer) {
+      parler("Tous les départs sont désactivés");
+    }
+  });
+}
+
+    function lireDonneesDepart(numero) {
+      donneesRef.child(`Depart${numero}`).on("value", snapshot => {
+        const data = snapshot.val() || {};
+
+        const courant = valeurNumerique(data[`CourantD${numero}`]);
+        const tension = valeurNumerique(data[`TensionD${numero}`]);
+        const puissance = valeurNumerique(data[`PuissanceD${numero}`]);
+        const energie = valeurNumerique(data[`EnergieD${numero}`]);
+
+        mesuresDepart[numero] = { courant, tension, puissance, energie };
+
+        document.getElementById(`courantD${numero}`).textContent = courant.toFixed(2) + " A";
+        document.getElementById(`tensionD${numero}`).textContent = tension.toFixed(2) + " V";
+        document.getElementById(`puissanceD${numero}`).textContent = puissance.toFixed(2) + " W";
+        document.getElementById(`energieD${numero}`).textContent = energie.toFixed(3) + " kWh";
+        predireEtatDepart(numero);
+      });
+    }
+
+    function ecouterCommandeDepart(numero) {
+      commandeRef.child(`Commande${numero}`).on("value", snapshot => {
+        const etat = valeurNumerique(snapshot.val());
+        const btn = document.getElementById(`btnActiverD${numero}`);
+        const texteCommande = document.getElementById(`etatCommandeD${numero}`);
+        const texteTableau = document.getElementById(`etatD${numero}`);
+
+        if (etat === 1) {
+          btn.classList.add("active");
+          texteCommande.textContent = "Départ activé";
+          texteTableau.textContent = "Départ activé";
+          texteCommande.style.color = "blue";
+          texteTableau.style.color = "blue";
+        } else {
+          btn.classList.remove("active");
+          texteCommande.textContent = "Départ désactivé";
+          texteTableau.textContent = "Départ désactivé";
+          texteCommande.style.color = "crimson";
+          texteTableau.style.color = "crimson";
+        }
+
+        predireEtatDepart(numero);
+        verifierEtatGlobal();
+      });
+    }
+
+    function verifierEtatGlobal() {
+      commandeRef.once("value").then(snapshot => {
+        const data = snapshot.val() || {};
+        let actifs = 0;
+
+        for (let i = 1; i <= 6; i++) {
+          if (valeurNumerique(data[`Commande${i}`]) === 1) actifs++;
+        }
+
+        const etatGlobal = document.getElementById("etatGlobal");
+        const btnActiverTout = document.getElementById("btnActiverTout");
+
+        if (actifs === 6) {
+          etatGlobal.textContent = "Tous les départs sont activés";
+          etatGlobal.style.color = "blue";
+          btnActiverTout.classList.add("active");
+        } else if (actifs === 0) {
+          etatGlobal.textContent = "Tous les départs sont désactivés";
+          etatGlobal.style.color = "red";
+          btnActiverTout.classList.remove("active");
+        } else {
+          etatGlobal.textContent = "Tous les départs ne sont pas activés";
+          etatGlobal.style.color = "green";
+          btnActiverTout.classList.remove("active");
+        }
+      });
+    }
+
+    function obtenirEtatCommandes() {
+      return commandeRef.once("value").then(snapshot => {
+        const data = snapshot.val() || {};
+        const etats = {};
+        for (let i = 1; i <= 6; i++) {
+          etats[`Départ ${i}`] = valeurNumerique(data[`Commande${i}`]);
+        }
+        return etats;
+      });
+    }
+
+    function annoncerEtatDesDeparts() {
+      obtenirEtatCommandes().then(etats => {
+        const actifs = Object.entries(etats).filter(([_, v]) => v === 1).map(([nom]) => nom);
+        const desactives = Object.entries(etats).filter(([_, v]) => v === 0).map(([nom]) => nom);
+
+        if (actifs.length === 0) {
+          parler("Tous les départs sont désactivés.");
+        } else if (actifs.length === 6) {
+          parler("Tous les départs sont activés.");
+        } else {
+          parler("Départs activés : " + actifs.join(", ") + ". Départs désactivés : " + desactives.join(", ") + ".");
+        }
+      });
+    }
+
+    function annoncerMesuresEtPrediction() {
+      compteurIA++;
+      if (compteurIA < 13) return;
+      compteurIA = 0;
+
+      let totalCourant = 0;
+      let totalPuissance = 0;
+      let totalEnergie = 0;
+      let departsAvecDonnees = 0;
+      let tension = 0;
+      const anomalies = [];
+
+      for (let i = 1; i <= 6; i++) {
+        const m = mesuresDepart[i] || { courant: 0, tension: 0, puissance: 0, energie: 0 };
+
+        if (tension === 0 && m.tension > 0) {
+    tension = m.tension;
+}
+
+        totalCourant += m.courant;
+        totalPuissance += m.puissance;
+        totalEnergie += m.energie;
+
+        const donneesReellesRecues = m.courant > 0 || m.tension > 0 || m.puissance > 0 || m.energie > 0;
+
+        if (donneesReellesRecues) {
+          departsAvecDonnees++;
+
+          if (m.courant > 100) anomalies.push(`le courant est anormal sur le départ ${i}`);
+          if (m.tension > 0 && (m.tension < 200 || m.tension > 250)) anomalies.push(`la tension est hors de la plage normale sur le départ ${i}`);
+          if (m.puissance > 3000) anomalies.push(`la puissance dépasse 3 000 watts sur le départ ${i}`);
+        }
+      }
+
+      //if (departsAvecDonnees === 0) {
+        //parler("Analyse de la prédiction I A : Les données en  réelle n'est encore reçue. Le courant,. Le système est en attente de connexion de l'appareil.");
+        //annoncerEtatDesDeparts();
+        //return;
+      //}
+
+      let texteMesures =
+        "Voici les mesures actuelles de la prédiction de l'état du système : " +
+        `Le courant total est de ${totalCourant.toFixed(2)} Ampeires, ` +
+        `La tension est de ${tension.toFixed(2)} Volts, ` +
+        `la puissance totale est de ${totalPuissance.toFixed(2)} watts, ` +
+        `et l'énergie totale est de ${totalEnergie.toFixed(3)} kilowatt heire. `;
+
+      if (anomalies.length === 0) {
+        texteMesures += "Analyse de la prédiction I A : toutes les données reçues sont normales. Le système fonctionne correctement.";
+      } else {
+        texteMesures += "Attention. Analyse de la prédiction I A : des anomalies ont été détectées après analyse des données. " + anomalies.join(", ") + ".";
+      }
+
+      parler(texteMesures);
+      annoncerEtatDesDeparts();
+    }
+
+    // Même automatisme de protection : si une tension réelle reçue est faible,
+    // tous les départs sont automatiquement désactivés.
+    function surveillerTensionFaible() {
+      let tensionFaibleDetectee = false;
+
+      for (let i = 1; i <= 6; i++) {
+        const tension = (mesuresDepart[i] || {}).tension || 0;
+        if (tension > 0 && tension < 120) {
+          tensionFaibleDetectee = true;
+          break;
+        }
+      }
+
+      if (tensionFaibleDetectee) {
+        desactiverTousLesDeparts(false);
+        if (!coupureTensionFaibleDejaAnnoncee) {
+          coupureTensionFaibleDejaAnnoncee = true;
+          parler("Attention, tension faible détectée. Tous les départs sont automatiquement désactivés pour protéger le système.");
+        }
+      } else {
+        coupureTensionFaibleDejaAnnoncee = false;
+      }
+    }
+
+    initialiserFirebaseSansEcraserESP32();
+
+    for (let i = 1; i <= 6; i++) {
+      mesuresDepart[i] = { courant: 0, tension: 0, puissance: 0, energie: 0 };
+      lireDonneesDepart(i);
+      ecouterCommandeDepart(i);
+    }
+
+    setInterval(annoncerMesuresEtPrediction, 7000);
+    setInterval(surveillerTensionFaible, 5000);
+
+    window.activerDepart = activerDepart;
+    window.desactiverDepart = desactiverDepart;
+    window.activerTousLesDeparts = activerTousLesDeparts;
+    window.desactiverTousLesDeparts = desactiverTousLesDeparts;
+  </script>
+</body>
+</html>

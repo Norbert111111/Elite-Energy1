@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HBN - @electro-elites</title>
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d6efd">
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-database-compat.js"></script>
+</head>
+
+<body>
+
+    <script>
+//document.addEventListener("contextmenu", function(e) {
+    //e.preventDefault();
+//});
+
+document.addEventListener("keydown", function(e) {
+
+    if (
+        (e.ctrlKey && e.key.toLowerCase() === "c") ||
+        (e.ctrlKey && e.key.toLowerCase() === "u") ||
+        (e.ctrlKey && e.key.toLowerCase() === "a") ||
+        (e.ctrlKey && e.key.toLowerCase() === "s")
+    ) {
+        e.preventDefault();
+    }
+
+});
+</script>
+
+
+  <div class="overlay">
+    <div class="content">
+
+      <div class="left-section">
+        <h2>SYSTÈME DE NUMÉRISATION DU TRANSPORT ÉLECTRIQUE</h2>
+        <h1>LES ELECTRO-ELITES</h1>
+        <p>
+          Bienvenue dans le système de numérisation du réseau de transport électrique en RDC conçu par
+          <span class="highlight">@electro-elites</span>.
+        </p>
+
+        <div class="buttons">
+          <button class="btn-orange">Se connecter</button>
+          <button class="btn-yellow">Check Data</button>
+        </div>
+      </div>
+
+      <div class="login-box">
+        <h3>Se connecter</h3>
+
+        <label for="username">NOM D'UTILISATEUR</label>
+        <input type="text" id="username" autocomplete="off">
+
+        <label for="password">MOT DE PASSE</label>
+        <input type="password" id="password" autocomplete="new-password">
+
+        <button class="btn-blue" onclick="login()">CONNEXION</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let modeSilencieux = false;
+
+    function parler(message) {
+      const utterance = new SpeechSynthesisUtterance(message);
+      utterance.lang = "fr-FR";
+      speechSynthesis.speak(utterance);
+    }
+
+   window.addEventListener("load", () => {
+
+  document.getElementById("username").value = "";
+  document.getElementById("password").value = "";
+
+  parler("Connectez-vous au réseau électrique intelligent 4.0 en RDC.");
+
+});
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyArEB0lH1tz3OOvrgKzL0cypYfMpQVgPm0",
+      authDomain: "maison-iot-b0dd6.firebaseapp.com",
+      databaseURL: "https://maison-iot-b0dd6-default-rtdb.firebaseio.com",
+      projectId: "maison-iot-b0dd6",
+      storageBucket: "maison-iot-b0dd6.appspot.com",
+      messagingSenderId: "838021465845",
+      appId: "1:838021465845:web:b277f02fd883b0c23627bc",
+      measurementId: "G-P697GH67M1"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function login() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (username === "" || password === "") {
+        alert("Veuillez remplir tous les champs.");
+        return;
+      }
+
+      const userRef = database.ref("ELITE1/usersELITE1/" + username);
+
+      userRef.get().then((snapshot) => {
+        if (snapshot.exists()) {
+          const storedPassword = snapshot.val().password;
+
+          if (storedPassword === password) {
+            window.location.href = "index1.html";
+          } else {
+            alert("Mot de passe incorrect.");
+          }
+        } else {
+          alert("Nom d'utilisateur non trouvé.");
+        }
+
+        document.getElementById("username").value = "";
+        document.getElementById("password").value = "";
+
+      }).catch((error) => {
+        console.error("Erreur Firebase :", error);
+        alert("Erreur de connexion Firebase.");
+      });
+    }
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+          .then(reg => console.log("Service Worker enregistré", reg))
+          .catch(err => console.log("Erreur Service Worker", err));
+      });
+    }
+  </script>
+</body>
+</html>
